@@ -36,4 +36,35 @@ public class AccesoPerros extends Conexion{
             Logger.getLogger(AccesoPerros.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+     //metodo CRUD - Update
+    public void actualizarPerros(int id, String nombre,int edad, String raza, String sexo,boolean operado, boolean chip){
+        try {
+            super.getStmt();
+            stmt.executeUpdate("Update perros set "
+                    + "nombre='"+nombre+"', "
+                    + "edad="+edad+", "
+                    + "raza='"+raza+"', "
+                    + "sexo='"+sexo+"', "
+                    + "operado="+operado+","
+                    + "chip="+chip+""
+                    + " where id="+id);
+            System.out.println("Actualizado con exito!");
+        } catch (SQLException ex) {
+            System.out.println("error al actualizar!");
+            Logger.getLogger(AccesoPerros.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    //metodo CRUD - Delete
+    public void eliminarPerros(int codigo){
+        try {
+            super.getStmt();
+            stmt.executeUpdate("Delete from perros where id="+codigo);
+            System.out.println("Eliminado con exito!");
+        } catch (SQLException ex) {
+            System.out.println("error al eliminar!");
+            Logger.getLogger(AccesoPerros.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -7,6 +7,7 @@ package clase4;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -15,8 +16,10 @@ import javax.swing.table.DefaultTableModel;
  * @author mjara
  */
 public class Tablas extends javax.swing.JFrame {
+    
     AccesoPerros perro = new AccesoPerros();
     DefaultTableModel tm;
+    int fila;
     
     /**
      * Creates new form Tablas
@@ -53,6 +56,8 @@ public class Tablas extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         chbOperado = new javax.swing.JCheckBox();
         chbChip = new javax.swing.JCheckBox();
+        btnActualizar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -119,6 +124,20 @@ public class Tablas extends javax.swing.JFrame {
 
         chbChip.setText("chip");
 
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -155,17 +174,21 @@ public class Tablas extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(chbOperado)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(chbChip))
+                                .addComponent(chbChip)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(cmbRaza, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(txtNombre))
                                 .addGap(18, 18, 18)
-                                .addComponent(btnGuardar)))
-                        .addGap(0, 16, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnGuardar)
+                                    .addComponent(btnActualizar))))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -176,14 +199,15 @@ public class Tablas extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtIdentificador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGuardar))
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtEdad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(btnGuardar)
-                    .addComponent(cmbRaza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbRaza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnActualizar))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -193,8 +217,9 @@ public class Tablas extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel6)
                         .addComponent(chbOperado)
-                        .addComponent(chbChip)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                        .addComponent(chbChip)
+                        .addComponent(btnEliminar)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -203,7 +228,9 @@ public class Tablas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        tm = (DefaultTableModel) tblPerritos.getModel();
+        int resp = JOptionPane.showConfirmDialog(null, "¿seguro de ingresar perro?");
+        if (resp == 0) {
+            tm = (DefaultTableModel) tblPerritos.getModel();
         
         int id = Integer.parseInt(txtIdentificador.getText());
         String nom = txtNombre.getText();
@@ -216,14 +243,20 @@ public class Tablas extends javax.swing.JFrame {
             perro.ingresarPerros(id, nom, ed, raza, sexo, ope, chip);
             tm.addRow(new Object[]{id,nom,ed,raza,sexo,ope,chip});
             tblPerritos.setModel(tm);
+            JOptionPane.showMessageDialog(null,"Ingresado con exito!","Ingreso perro", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
         }
         
         limpiar();
+        }else{
+            JOptionPane.showMessageDialog(null,"No ingresado!","Ingreso perro", JOptionPane.WARNING_MESSAGE);
+        }
+            
+        
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void tblPerritosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPerritosMouseClicked
-        int fila = tblPerritos.getSelectedRow();
+        fila = tblPerritos.getSelectedRow();
         tm = (DefaultTableModel) tblPerritos.getModel();
         
         String id = String.valueOf(tm.getValueAt(fila, 0));
@@ -242,6 +275,38 @@ public class Tablas extends javax.swing.JFrame {
         chbChip.setSelected(chip);
         
     }//GEN-LAST:event_tblPerritosMouseClicked
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        
+        tm = (DefaultTableModel) tblPerritos.getModel();
+        
+        int id = Integer.parseInt(txtIdentificador.getText());
+        tm.setValueAt(id, fila, 0);
+        String nombre = txtNombre.getText();
+        tm.setValueAt(nombre, fila, 1);
+        int edad = Integer.parseInt(txtEdad.getText());
+        tm.setValueAt(edad, fila, 2);
+        String raza = (String) cmbRaza.getSelectedItem();
+        tm.setValueAt(raza, fila, 3);
+        String sexo = comprobarSexo();
+        tm.setValueAt(sexo, fila, 4);
+        boolean ope = chbOperado.isSelected();
+        tm.setValueAt(ope, fila, 5);
+        boolean chip = chbChip.isSelected();
+        tm.setValueAt(chip, fila, 6);
+        
+        perro.actualizarPerros(id, nombre, edad, raza, sexo, ope, chip);
+        tblPerritos.setModel(tm);
+        limpiar();
+        
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        tm = (DefaultTableModel) tblPerritos.getModel();
+        int id = (int) tm.getValueAt(fila, 0);
+        perro.eliminarPerros(id);
+        tm.removeRow(fila);
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -285,6 +350,7 @@ public class Tablas extends javax.swing.JFrame {
         cmbRaza.setSelectedIndex(-1);
         chbOperado.setSelected(false);
         chbChip.setSelected(false);
+        fila=-1;
     }
     
     public String comprobarSexo(){
@@ -328,6 +394,8 @@ public class Tablas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.ButtonGroup btnGroupSexo;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JCheckBox chbChip;
